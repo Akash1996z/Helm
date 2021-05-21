@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "rapidfire-demo.fullname" . }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: {{ include "rapidfire-demo.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        env:
+           {{- range .Values.envar }}
+           - name: {{ .name }}
+             value: {{ .value }}
+           {{- end }} 
+        command: ["{{ .Values.job.cm1 }}","{{ .Values.job.cm2 }}"]
+        args: ["{{ .Values.job.cm3 }}"]
+#        - rails
+#        - db:setup
+#        - db:migrate
+      restartPolicy: {{ .Values.job.restartPolicy }}
